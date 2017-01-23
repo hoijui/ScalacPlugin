@@ -3,17 +3,17 @@
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
     <title>
       ScalacPlugin
-    </title>    
+    </title>
   </head>
   <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
     <div class="book" lang="en">
-      
+
       <div class="titlepage">
         <div>
           <div>
             <h1 class="title">Scalac plugin</h1>
           </div>
-          
+
           <div>
             <div class="authorgroup">
               <div class="author">
@@ -24,22 +24,22 @@
               </div>
             </div>
           </div>
-          
+
           <div>
             <div class="legalnotice">
               <p class="legalnotice-title"><b>Legal Notice</b></p>
               <p>
                Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License,
                Version 1.1 or any later version published by the Free Software Foundation; with no "Invariant Sections","Front-Cover Texts" or
-               "Back-Cover Texts", each as defined in the license.A copy of the license can be found in the file 
-                <code class="filename"> COPYING.DOC.txt </code> included with jEdit. 
+               "Back-Cover Texts", each as defined in the license.A copy of the license can be found in the file
+                <code class="filename"> COPYING.DOC.txt </code> included with jEdit.
               </p>
             </div>
           </div>
         </div>
         <hr>
       </div>
-      
+
       <div class="toc">
         <p><b>Table of Contents</b></p>
         <ul>
@@ -48,23 +48,23 @@
           <li><span class="chapter"><a href="#license">3. License</a></span></li>
         </ul>
       </div>
-      
+
       <div class="chapter" lang="en">
         <div class="titlepage">
           <h2 class="title"><a name="intro"></a>Chapter 1. Introduction</h2>
         </div>
-        
+
         <p>
-           The Scalac plugin provides the ability to compile Scala files without 
+           The Scalac plugin provides the ability to compile Scala files without
            invoking external compiler, it keeps compiler in jEdit's JVM all the time
-           and avoids long startup times. It does not provide the rich Scala IDE 
-           functionality similar to Eclipse, IntelliJ or NetBeans Scala plugins. 
+           and avoids long startup times. It does not provide the rich Scala IDE
+           functionality similar to Eclipse, IntelliJ or NetBeans Scala plugins.
            Because jEdit is much lighter and simpler than those IDEs and provides the
            ability to work very productively, Scala plugin follows
-           the way how C/C++ development is done using jEdit. The only difference 
-           that compiler is embedded. The plugin uses Console and ErrorList plugins, 
+           the way how C/C++ development is done using jEdit. The only difference
+           that compiler is embedded. The plugin uses Console and ErrorList plugins,
            for Commando scripts and error reporting.
-        </p>        
+        </p>
       </div>
 
       <div class="chapter" lang="en">
@@ -73,19 +73,19 @@
         </div>
         <p>
            After installation, the Scalac plugin copies several files into your jEdit settings directory:
-           Scala edit and syntax mode into <i>~/.jedit/modes/</i> and several console Commando scripts 
+           Scala edit and syntax mode into <i>~/.jedit/modes/</i> and several console Commando scripts
            into <i>console/commando/</i>.
 
            <ul>
-           <li>Scala plugin menu <b>Compiler...</b>, Commando script <b>scalac.xml</b> is automatically bound to .scala files, 
-           so if you have a shortcut for console Compile command, or call it directly from 
-           Scala plugin menu or from Console menu, popup with Scala compiler settings will appear. 
-           
+           <li>Scala plugin menu <b>Compiler...</b>, Commando script <b>scalac.xml</b> is automatically bound to .scala files,
+           so if you have a shortcut for console Compile command, or call it directly from
+           Scala plugin menu or from Console menu, popup with Scala compiler settings will appear.
+
            <p>
-           This BeanShell script invokes static class scalac.compiler.run("...") with the same options as 
+           This BeanShell script invokes static class scalac.compiler.run("...") with the same options as
            for external scalac command.
            <p/>
-           
+
            <p>
             This dialog has several parameters which define the behaviour.
             <ul>
@@ -118,18 +118,18 @@
             </li>
             </ul>
             The rest of the parameters are self explanatory and need not be specified
-            when using Project path. But they can be used in addition or instead of 
+            when using Project path. But they can be used in addition or instead of
             predefined project structure.
            </p>
            </li>
 
            <li><p>
-               Scala plugin menu <b>Jetty...<.b>, Commando script <b>jetty.xml</b> for running embedded Web servlet server. It uses the same 
+               Scala plugin menu <b>Jetty...<.b>, Commando script <b>jetty.xml</b> for running embedded Web servlet server. It uses the same
                project structure as Scala compiler and performs compiled classes monitoring for
                modifications and automatically restarts web application.
                </p>
                <p>
-               Before running Jetty, make sure you ran Scala compiler at least 
+               Before running Jetty, make sure you ran Scala compiler at least
                once to produce compiled classes.
                </p>
            </li>
@@ -145,36 +145,36 @@
            </li>
         </p>
         <p>
-           By default embedded compiler behaves the same way as external scalac utility with 2 
+           By default embedded compiler behaves the same way as external scalac utility with 2
            additional options for convenience:
            <ul>
-           <li><b>-scalapath path</b> parameter tells the compiler to compile all modified .scala 
+           <li><b>-scalapath path</b> parameter tells the compiler to compile all modified .scala
                files in this directory, recursevily. No need to specify every source file separately.
            </li>
 
-           <li><b>-jarpath</b> parameter tells that all .jar files under specified directories should be 
-               added to classpath. The format of this parameter is the same as -classpath, multiple directories 
-               can be specified. The compiler will locate all individual .jar files recursevily and add 
+           <li><b>-jarpath</b> parameter tells that all .jar files under specified directories should be
+               added to classpath. The format of this parameter is the same as -classpath, multiple directories
+               can be specified. The compiler will locate all individual .jar files recursevily and add
                then to the classpath.
            </li>
         </p>
         <p>
-        At this moment, embedded compiler keeps track of modified files in the memory, 
+        At this moment, embedded compiler keeps track of modified files in the memory,
         after restart it will recompile all files again
         </p>
       </div>
-      
+
       <div class="chapter" lang="en">
         <div class="titlepage">
           <h2 class="title"><a name="license"></a>Chapter 3. License</h2>
         </div>
-        
+
         <p>
-           The source code is distributed under the GPL. Please see 
+           The source code is distributed under the GPL. Please see
            <a href="http://www.fsf.org/copyleft/gpl.html" target="_top"> http://www.fsf.org/copyleft/gpl.html</a>
         </p>
-      </div>      
-      
+      </div>
+
     </div>
   </body>
 </html>

@@ -19,16 +19,16 @@
         <COMMAND SHELL="System" CONFIRM="FALSE">
             buf = new StringBuffer();
 
-            if (cmd.length() > 0) 
+            if (cmd.length() > 0)
                 buf.append(cmd + " ");
 
-            if (fsc) 
+            if (fsc)
                 buf.append(" -Donce scala:cc ");
             else
-            if (goal.length() == 0) 
+            if (goal.length() == 0)
                 buf.append(" scala:compile ");
 
-            if (goal.length() > 0) 
+            if (goal.length() > 0)
                 buf.append(" ").append(goal);
 
             buf.toString()

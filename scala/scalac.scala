@@ -40,17 +40,17 @@ object compiler {
     val classpath = new ListBuffer[String]
     val cache = new HashMap[String,Long]
     val runtime = Runtime.getRuntime()
-   
+
     // Setup environment, activate console window
     def prepare: Boolean = {
         if (view == null) {
             view = jEdit.getActiveView()
         }
-    
+
         if (dock == null) {
-            dock = view.getDockableWindowManager() 
+            dock = view.getDockableWindowManager()
         }
-    
+
         // Make sure we have console plugin active
         if (console == null) {
             console = dock.getDockable("console").asInstanceOf[Console]
@@ -59,11 +59,11 @@ object compiler {
                 console = dock.getDockable("console").asInstanceOf[Console]
                 if (console == null) {
                     printf("fatal: Console plugin not found")
-                    return false               
+                    return false
                 }
             }
         }
-        
+
         // Make sure we have errorlist plugin active
         if (errorlist == null) {
             errorlist = dock.getDockable("error-list").asInstanceOf[ErrorList]
@@ -72,15 +72,15 @@ object compiler {
                 errorlist = dock.getDockable("error-list").asInstanceOf[ErrorList]
                 if (errorlist == null) {
                     printf("fatal: ErroList plugin not found")
-                    return false               
+                    return false
                 }
             }
         }
-        
+
         if (parser == null) {
             parser = new CommandOutputParser(console.getView(), console.getErrorSource(), console.getPlainColor());
         }
-        
+
         parser.setDirectory(view.getBuffer().getDirectory())
         console.getErrorSource().clear()
         console.setShell("System")
@@ -88,11 +88,11 @@ object compiler {
         view.getDockableWindowManager().showDockableWindow("console")
         return true
     }
-  
+
     def error(msg: String) = {
         printf(msg)
     }
-   
+
     // Return all files that match given regex, recursevily
     def findFiles(file: File, ext: String): ListBuffer[String] = {
         var files = new ListBuffer[String]
@@ -124,7 +124,7 @@ object compiler {
 
     // Compare 2 settings objects until native implementation fixed
     def isSame(s1: Settings, s2: Settings): Boolean = {
-        for (i <- 1 until s1.allSettings.length) { 
+        for (i <- 1 until s1.allSettings.length) {
             val a = s1.allSettings(i)
             val b = s2.allSettings(i)
             if (a.unparse != b.unparse) {
@@ -133,7 +133,7 @@ object compiler {
         }
         return true
     }
-    
+
     // Flush file from cache
     def cacheFlush(file: String) = {
         if (cache.contains(file)) {
@@ -145,7 +145,7 @@ object compiler {
     def printf(msg: String): Unit = {
         console.getOutput().print(null, msg);
     }
-    
+
     // Add all .jar files from system classpath
     def systemClasspath(path: ListBuffer[String]) = {
         val jars = jEdit.getProperty("scalac.jarpath")
@@ -154,7 +154,7 @@ object compiler {
                findFiles(new File(f), jarExt).foreach(path += _)
            }
         }
-         
+
         // Add system classpath as it is
         val classes = jEdit.getProperty("scalac.classpath")
         if (classes != null) {
@@ -184,7 +184,7 @@ object compiler {
             }
 
             IOUtilities.closeQuietly(in)
-            IOUtilities.closeQuietly(out)            
+            IOUtilities.closeQuietly(out)
         } catch {
             case e: Exception => Log.log(Log.ERROR, this, e.printStackTrace())
         }
@@ -213,14 +213,14 @@ object compiler {
     def run(file: String): Unit = {
         run(file.split(" "))
     }
-  
+
     // Run compiler with arguments in array
     def run(args: Array[String]): Unit = {
         if (!prepare) {
-            return    
+            return
         }
         printf("scalac" + args.mkString(" "))
-        
+
         val start_time = compat.Platform.currentTime
         var params = new ListBuffer[String]
         var files = new ListBuffer[String]
@@ -232,7 +232,7 @@ object compiler {
         val ss = new Settings(error)
 
         classpath.clear
-        
+
         // Add all .scala files from the project directory
         for (p <- args) {
             if (p == "-d") {
@@ -279,19 +279,19 @@ object compiler {
         }
         // Append all project source files at the end of the list
         files.foreach(params += _)
-        
+
         // Parse command line parameters
         val command = new CompilerCommand(params.toList, settings, error, false)
 
         // Add system classes
         systemClasspath(classpath)
-    
+
         // Append Scala plugin jar because compiler and library must be in the classpath
         classpath += constructPath(jEdit.getSettingsDirectory(), "jars", this.getClass.getClassLoader.toString.split(" ")(0))
-        
+
         // Build final class path
         settings.classpath.value = classpath.mkString(File.pathSeparator)
-      
+
         // Remove files that are not modified since the last compilation
         val sources = command.files.filter(isModified)
 
@@ -314,17 +314,17 @@ object compiler {
         // Redirect reporter to our console
         reporter = new ConsoleReporter(command.settings) {
             override def displayPrompt = ()
-        
-            override def printMessage(msg: String) = { 
+
+            override def printMessage(msg: String) = {
                console.getOutput().print(null, msg)
                parser.processLine(msg);
             }
-        
+
             override def flush = {
                parser.finishErrorParsing()
             }
         }
-    
+
         try {
             // Reuse existing compiler if settings are the same
             if (compiler != null && isSame(command.settings, compiler.settings)) {
@@ -334,12 +334,12 @@ object compiler {
                 compiler = new Global(command.settings, reporter)
                 printf("new compiler created")
             }
-            
+
             val c = compiler
             val run = new c.Run
             run compile sources
             reporter.printSummary()
-         
+
             // Check for errors and flush files with errors from cache
             val errors = console.getErrorSource().getAllErrors()
             if (errors != null) {
@@ -348,7 +348,7 @@ object compiler {
                 }
                 view.getDockableWindowManager().showDockableWindow("error-list")
             }
-            
+
             // Garbage collection after each compilation
             runtime.gc()
             if ((runtime.totalMemory() - runtime.freeMemory()).toDouble / runtime.maxMemory().toDouble > 0.8) {
@@ -356,27 +356,27 @@ object compiler {
                 printf("compiler destroyed, total=" + runtime.totalMemory() + " free=" +runtime.freeMemory() + " max=" + runtime.maxMemory())
             }
 
-            // Activate error list window and show system console with messages               
+            // Activate error list window and show system console with messages
             console.setShell("System")
             printf("done in " + (compat.Platform.currentTime - start_time) + " ms")
-            
+
         } catch {
             case ex @ FatalError(msg) => reporter.error(null, "fatal error: " + msg)
         }
         return
   }
-} 
+}
 
 class ScalacPlugin extends EditPlugin {
 
     override def start = {
         if (jEdit.getProperty("scalac.init") != compiler.version) {
-            
+
             val file = new File(constructPath(jEdit.getSettingsDirectory(), "scalac"))
             if (!file.exists) {
                 file.mkdirs
             }
-            
+
             // On first init, copy resource files into settings directory
             copyResource("/resources/catalog", "modes" + File.separator + "catalog")
             copyResource("/resources/scala.xml", "modes" + File.separator + "scala.xml")
@@ -415,12 +415,12 @@ class ScalacPlugin extends EditPlugin {
 
             IOUtilities.copyStream(null, in, out, false)
             IOUtilities.closeQuietly(in)
-            IOUtilities.closeQuietly(out)            
+            IOUtilities.closeQuietly(out)
         } catch {
             case e: Exception => Log.log(Log.ERROR, this, e.printStackTrace())
         }
     }
-    
+
     override def stop = {
     }
 }
