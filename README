@@ -1,8 +1,7 @@
 Scala plugin for jEdit 1.1.0
 Vlad Seryakov vseryakov@gmail.com
 
-Introduction
-------------------
+## Introduction
 
 This plugin makes the development similar to C/C++ or other scripting environment,
 i.e. it does not use any package manager or build tool. It assumes that all .jar
@@ -21,8 +20,7 @@ without problem because it loads all .jars from the lib/ automatically.
 
 See index.html for more information about installation and usage of the plugin.
 
-Features
-------------------
+## Features
 
 - Scala syntax highlighting
 - Embedded Scala compiler, results in very fast compilation
@@ -37,14 +35,13 @@ Features
 
 See index.html for details
 
-Compilation and installation
--------------------------------
+## Compilation and installation
 
-To build
+To build:
 
- # and
+	ant
 
-it will create ScalacPlugin.jar with Scala compiler because compiler requires
+This will create `ScalacPlugin.jar` with a Scala compiler, because the compiler requires
 classes to be available during startup and compilation. Instead of using
 bootstrapping we just combine Scala compiler and Jetty server with our plugin
 and install into local jEdit directory.
